@@ -466,8 +466,8 @@ func resourceAwsRDSClusterCreate(d *schema.ResourceData, meta interface{}) error
 			opts.VpcSecurityGroupIds = expandStringList(attr.List())
 		}
 
-		if _, ok := d.GetOk("db_cluster_parameter_group_name"); ok {
-			clusterUpdate = true
+		if attr, ok := d.GetOk("db_cluster_parameter_group_name"); ok {
+			opts.DBClusterParameterGroupName = aws.String(attr.(string))
 		}
 
 		if _, ok := d.GetOk("backup_retention_period"); ok {
