@@ -41,6 +41,7 @@ The following arguments are supported:
 * `sms_verification_message` - (Optional) A string representing the SMS verification message.
 * `tags` - (Optional) A mapping of tags to assign to the User Pool.
 * `username_attributes` - (Optional) Specifies whether email addresses or phone numbers can be specified as usernames when a user signs up. Conflicts with `alias_attributes`.
+* `user_pool_add_ons` - (Optional) Configuration block for [user pool add-ons](#user-pool-add-ons) to enable user pool advanced security mode features.
 * `verification_message_template` (Optional) - The [verification message templates](#verification-message-template) configuration.
 
 #### Admin Create User Config
@@ -111,11 +112,15 @@ The following arguments are supported:
   * `external_id` (Required) - The external ID used in IAM role trust relationships. For more information about using external IDs, see [How to Use an External ID When Granting Access to Your AWS Resources to a Third Party](http://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-user_externalid.html).
   * `sns_caller_arn` (Required) - The ARN of the Amazon SNS caller. This is usually the IAM role that you've given Cognito permission to assume.
 
+#### User Pool Add-ons
+
+  * `advanced_security_mode` (Required) - The mode for advanced security, must be one of `OFF`, `AUDIT` or `ENFORCED`.
+
 #### Verification Message Template
 
   * `default_email_option` (Optional) - The default email option. Must be either `CONFIRM_WITH_CODE` or `CONFIRM_WITH_LINK`. Defaults to `CONFIRM_WITH_CODE`.
   * `email_message` (Optional) - The email message template. Must contain the `{####}` placeholder. **NOTE:** - If `email_verification_message` and `verification_message_template.email_message` are specified and the values are different, either one is prioritized and updated.
-  * `email_message_by_link` (Optional) - The email message template for sending a confirmation link to the user, it must contain the `{##VERIFY EMAIL##}` placeholder.
+  * `email_message_by_link` (Optional) - The email message template for sending a confirmation link to the user, it must contain the `{##Click Here##}` placeholder.
   * `email_subject` (Optional) - The subject line for the email message template. **NOTE:** - If `email_verification_subject` and `verification_message_template.email_subject` are specified and the values are different, either one is prioritized and updated.
   * `email_subject_by_link` (Optional) - The subject line for the email message template for sending a confirmation link to the user.
   * `sms_message` (Optional) - The SMS message template. Must contain the `{####}` placeholder.

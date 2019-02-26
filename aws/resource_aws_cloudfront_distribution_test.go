@@ -32,9 +32,7 @@ func testSweepCloudFrontDistributions(region string) error {
 
 	input := &cloudfront.ListDistributionsInput{}
 	err = conn.ListDistributionsPages(input, func(page *cloudfront.ListDistributionsOutput, lastPage bool) bool {
-		for _, distributionSummary := range page.DistributionList.Items {
-			distributionSummaries = append(distributionSummaries, distributionSummary)
-		}
+		distributionSummaries = append(distributionSummaries, page.DistributionList.Items...)
 		return !lastPage
 	})
 	if err != nil {
@@ -209,9 +207,9 @@ func TestAccAWSCloudFrontDistribution_multiOrigin(t *testing.T) {
 				Config: testAccAWSCloudFrontDistributionMultiOriginConfig,
 				Check: resource.ComposeTestCheckFunc(
 					testAccCheckCloudFrontDistributionExistence(resourceName),
-					resource.TestCheckResourceAttr(resourceName, "cache_behavior.#", "2"),
-					resource.TestCheckResourceAttr(resourceName, "cache_behavior.2106187217.default_ttl", "50"),
-					resource.TestCheckResourceAttr(resourceName, "cache_behavior.2106187217.path_pattern", "images1/*.jpg"),
+					resource.TestCheckResourceAttr(resourceName, "ordered_cache_behavior.#", "2"),
+					resource.TestCheckResourceAttr(resourceName, "ordered_cache_behavior.0.default_ttl", "50"),
+					resource.TestCheckResourceAttr(resourceName, "ordered_cache_behavior.0.path_pattern", "images1/*.jpg"),
 				),
 			},
 		},
@@ -433,7 +431,7 @@ func testAccCheckCloudFrontDistributionDestroy(s *terraform.State) error {
 		dist, err := testAccAuxCloudFrontGetDistributionConfig(s, k)
 		if err == nil {
 			if _, ok := os.LookupEnv("TF_TEST_CLOUDFRONT_RETAIN"); ok {
-				if *dist.DistributionConfig.Enabled != false {
+				if *dist.DistributionConfig.Enabled {
 					return fmt.Errorf("CloudFront distribution should be disabled")
 				}
 				return nil
@@ -594,7 +592,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 	viewer_certificate {
 		cloudfront_default_certificate = true
 	}
-	tags {
+	tags = {
             environment = "production"
             account = "main"
 	}
@@ -646,7 +644,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 	viewer_certificate {
 		cloudfront_default_certificate = true
 	}
-	tags {
+	tags = {
             environment = "dev"
 	}
 	%s
@@ -765,7 +763,7 @@ resource "aws_cloudfront_distribution" "multi_origin_distribution" {
 		max_ttl = 100
 		viewer_protocol_policy = "allow-all"
 	}
-	cache_behavior {
+	ordered_cache_behavior {
 		allowed_methods = [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
 		cached_methods = [ "GET", "HEAD" ]
 		target_origin_id = "myS3Origin"
@@ -781,7 +779,7 @@ resource "aws_cloudfront_distribution" "multi_origin_distribution" {
 		viewer_protocol_policy = "allow-all"
 		path_pattern = "images1/*.jpg"
 	}
-	cache_behavior {
+	ordered_cache_behavior {
 		allowed_methods = [ "DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT" ]
 		cached_methods = [ "GET", "HEAD" ]
 		target_origin_id = "myCustomOrigin"

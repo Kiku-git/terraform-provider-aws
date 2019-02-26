@@ -59,6 +59,12 @@ func TestAccAWSBudgetsBudget_basic(t *testing.T) {
 					resource.TestCheckResourceAttr("aws_budgets_budget.foo", "time_unit", *configBasicUpdate.TimeUnit),
 				),
 			},
+			{
+				ResourceName:            "aws_budgets_budget.foo",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"name_prefix"},
+			},
 		},
 	})
 }
@@ -100,6 +106,13 @@ func TestAccAWSBudgetsBudget_prefix(t *testing.T) {
 					resource.TestCheckResourceAttr("aws_budgets_budget.foo", "time_period_end", configBasicUpdate.TimePeriod.End.Format("2006-01-02_15:04")),
 					resource.TestCheckResourceAttr("aws_budgets_budget.foo", "time_unit", *configBasicUpdate.TimeUnit),
 				),
+			},
+
+			{
+				ResourceName:            "aws_budgets_budget.foo",
+				ImportState:             true,
+				ImportStateVerify:       true,
+				ImportStateVerifyIgnore: []string{"name_prefix"},
 			},
 		},
 	})
@@ -309,13 +322,16 @@ resource "aws_budgets_budget" "foo" {
  	limit_unit = "{{.BudgetLimit.Unit}}"
 	time_period_start = "{{.TimePeriod.Start.Format "2006-01-02_15:04"}}" 
  	time_unit = "{{.TimeUnit}}"
-	cost_filters {
+	cost_filters = {
 		"` + costFilterKey + `" = "` + *budgetConfig.CostFilters[costFilterKey][0] + `"
 	}
 }
 `))
 	var doc bytes.Buffer
-	t.Execute(&doc, budgetConfig)
+	// TODO: Convert to fmt.Sprintf() (https://github.com/terraform-providers/terraform-provider-aws/issues/7456)
+	if err := t.Execute(&doc, budgetConfig); err != nil {
+		panic(fmt.Sprintf("error executing template: %s", err))
+	}
 	return doc.String()
 }
 
@@ -329,13 +345,16 @@ resource "aws_budgets_budget" "foo" {
  	limit_unit = "{{.BudgetLimit.Unit}}"
 	time_period_start = "{{.TimePeriod.Start.Format "2006-01-02_15:04"}}" 
  	time_unit = "{{.TimeUnit}}"
-	cost_filters {
+	cost_filters = {
 		"` + costFilterKey + `" = "` + *budgetConfig.CostFilters[costFilterKey][0] + `"
 	}
 }
 `))
 	var doc bytes.Buffer
-	t.Execute(&doc, budgetConfig)
+	// TODO: Convert to fmt.Sprintf() (https://github.com/terraform-providers/terraform-provider-aws/issues/7456)
+	if err := t.Execute(&doc, budgetConfig); err != nil {
+		panic(fmt.Sprintf("error executing template: %s", err))
+	}
 	return doc.String()
 }
 
@@ -347,7 +366,7 @@ resource "aws_budgets_budget" "foo" {
 	budget_type = "{{.BudgetType}}"
  	limit_amount = "{{.BudgetLimit.Amount}}"
  	limit_unit = "{{.BudgetLimit.Unit}}"
-	cost_types = {
+	cost_types {
 		include_tax = "{{.CostTypes.IncludeTax}}"
 		include_subscription = "{{.CostTypes.IncludeSubscription}}"
 		use_blended = "{{.CostTypes.UseBlended}}"
@@ -355,13 +374,16 @@ resource "aws_budgets_budget" "foo" {
 	time_period_start = "{{.TimePeriod.Start.Format "2006-01-02_15:04"}}" 
 	time_period_end = "{{.TimePeriod.End.Format "2006-01-02_15:04"}}"
  	time_unit = "{{.TimeUnit}}"
-	cost_filters {
+	cost_filters = {
 		"` + costFilterKey + `" = "` + *budgetConfig.CostFilters[costFilterKey][0] + `"
 	}
 }
 `))
 	var doc bytes.Buffer
-	t.Execute(&doc, budgetConfig)
+	// TODO: Convert to fmt.Sprintf() (https://github.com/terraform-providers/terraform-provider-aws/issues/7456)
+	if err := t.Execute(&doc, budgetConfig); err != nil {
+		panic(fmt.Sprintf("error executing template: %s", err))
+	}
 	return doc.String()
 }
 
@@ -375,13 +397,16 @@ resource "aws_budgets_budget" "foo" {
  	limit_unit = "{{.BudgetLimit.Unit}}"
 	time_period_start = "{{.TimePeriod.Start.Format "2006-01-02_15:04"}}" 
  	time_unit = "{{.TimeUnit}}"
-	cost_filters {
+	cost_filters = {
 		"` + costFilterKey + `" = "` + *budgetConfig.CostFilters[costFilterKey][0] + `"
 	}
 }
 `))
 	var doc bytes.Buffer
-	t.Execute(&doc, budgetConfig)
+	// TODO: Convert to fmt.Sprintf() (https://github.com/terraform-providers/terraform-provider-aws/issues/7456)
+	if err := t.Execute(&doc, budgetConfig); err != nil {
+		panic(fmt.Sprintf("error executing template: %s", err))
+	}
 	return doc.String()
 }
 
@@ -393,7 +418,7 @@ resource "aws_budgets_budget" "foo" {
 	budget_type = "{{.BudgetType}}"
  	limit_amount = "{{.BudgetLimit.Amount}}"
  	limit_unit = "{{.BudgetLimit.Unit}}"
-	cost_types = {
+	cost_types {
 		include_tax = "{{.CostTypes.IncludeTax}}"
 		include_subscription = "{{.CostTypes.IncludeSubscription}}"
 		use_blended = "{{.CostTypes.UseBlended}}"
@@ -401,12 +426,15 @@ resource "aws_budgets_budget" "foo" {
 	time_period_start = "{{.TimePeriod.Start.Format "2006-01-02_15:04"}}" 
 	time_period_end = "{{.TimePeriod.End.Format "2006-01-02_15:04"}}"
  	time_unit = "{{.TimeUnit}}"
-	cost_filters {
+	cost_filters = {
 		"` + costFilterKey + `" = "` + *budgetConfig.CostFilters[costFilterKey][0] + `"
 	}
 }
 `))
 	var doc bytes.Buffer
-	t.Execute(&doc, budgetConfig)
+	// TODO: Convert to fmt.Sprintf() (https://github.com/terraform-providers/terraform-provider-aws/issues/7456)
+	if err := t.Execute(&doc, budgetConfig); err != nil {
+		panic(fmt.Sprintf("error executing template: %s", err))
+	}
 	return doc.String()
 }

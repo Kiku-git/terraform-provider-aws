@@ -16,7 +16,7 @@ Provides a CloudFormation Stack resource.
 resource "aws_cloudformation_stack" "network" {
   name = "networking-stack"
 
-  parameters {
+  parameters = {
     VPCCidr = "10.0.0.0/16"
   }
 
@@ -30,7 +30,7 @@ resource "aws_cloudformation_stack" "network" {
     }
   },
   "Resources" : {
-    "my-vpc": {
+    "myVpc": {
       "Type" : "AWS::EC2::VPC",
       "Properties" : {
         "CidrBlock" : { "Ref" : "VPCCidr" },
